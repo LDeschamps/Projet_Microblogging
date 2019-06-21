@@ -11,6 +11,8 @@ pytest = "*"
 peewee = "*"
 flask-wtf = "*"
 flask-restful = "*"
+requests = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.7"
