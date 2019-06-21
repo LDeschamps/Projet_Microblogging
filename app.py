@@ -1,38 +1,69 @@
-from flask import Flask
-from models import *
-from faker import Factory
-import click
+# all the imports
+import sqlite3
+from flask import Flask, request, session, g, redirect, url_for, \
+    abort, render_template, flash
+
+# configuration
+DATABASE = './data.sqlite3'
+DEBUG = False
+SECRET_KEY = 'YWRtaW46YWRtaW4='
+USERNAME = 'admin'
+PASSWORD = 'admin'
+
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.from_envvar('FLASK_SETTINGS', silent=True)
 
 
-@app.cli.command()
-def initdb():
-    """Create database"""
-    create_tables()
-    click.echo('Initialized the database')
+def connect_db():
+    return sqlite3.connect(app.config['DATABASE'])
 
-@app.cli.command()
-def dropdb():
-    """Drop database tables"""
-    drop_tables()
-    click.echo('Dropped tables from database')
 
-@app.cli.command()
-def fakedatauser():
-    fake = Factory.create()
-    for pk in range(0, 10):
-        User.create(username=fake.first_name(),
-                    first_name=fake.first_name(),
-                    last_name=fake.last_name(),
-                    email=fake.email(),
-                    password=fake.password())
+@app.before_request
+def before_request():
+    g.db = connect_db()
 
-@app.cli.command()
-def fakedatapubli():
-    fake = Factory.create()
-    for pk in range(0, 10):
-        Publication.create(title=fake.word(),
-                    body=fake.text(),
-                    creation_date=fake.date(),
-                    update_date=fake.email(),
-                    author=1)
+
+@app.teardown_request
+def teardown_request(exception):
+    g.db.close()
+
+
+@app.route('/')
+def show_entries():
+    cur = g.db.execute('select title, body from publication order by creation_date desc')
+    entries = [dict(title=row[0], body=row[1]) for row in cur.fetchall()]
+    return render_template('show_entries.html', entries=entries)
+
+
+@app.route('/add', methods=['POST'])
+def add_entry():
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('insert into entries (title , body) values ​​(?, ?)',
+                 [request.form['title'], request.form['body']])
+    g.db.commit()
+    flash('New entry was successfully posted')
+    return redirect(url_for('show_entries'))
+
+
+@app.route('/security/login_user', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.Config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('Welcome ! You are now logged')
+            return redirect(url_for('show_entries'))
+    return render_template('/security/login_user.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('Successfully logged out')
+    return redirect(url_for('show_entries'))
