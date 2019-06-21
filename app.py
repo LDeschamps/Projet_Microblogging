@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask
 from models import *
+from faker import Factory
 import click
 app = Flask(__name__)
 
@@ -18,11 +19,10 @@ def dropdb():
 
 @app.cli.command()
 def fakedata():
-    from faker import Faker
-    fake = Faker()
+    fake = Factory.create()
     for pk in range(0, 10):
-        User.create(username=fake.username(), 
-                        firstname=fake.first_name(),
-                        last_name=fake.last_name(),
-                        email=fake.email(),
-                        password=fake.password())
+        User.create(username=fake.first_name(),
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    email=fake.email(),
+                    password=fake.password())
