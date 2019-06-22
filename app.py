@@ -47,7 +47,7 @@ def add_entry():
     return redirect(url_for('show_entries'))
 
 
-@app.route('/security/login_user', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
@@ -59,7 +59,12 @@ def login():
             session['logged_in'] = True
             flash('Welcome ! You are now logged')
             return redirect(url_for('show_entries'))
-    return render_template('/security/login_user.html', error=error)
+    return render_template('login.html', error=error)
+
+
+@app.route('/signUp')
+def signUp():
+   return render_template('signup.html')
 
 
 @app.route('/logout')
