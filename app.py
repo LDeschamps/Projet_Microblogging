@@ -9,8 +9,6 @@ from models import *
 DATABASE = './data.sqlite3'
 DEBUG = False
 SECRET_KEY = 'YWRtaW46YWRtaW4='
-USERNAME = 'admin'
-PASSWORD = 'admin'
 
 app = Flask(__name__)
 app.config.from_object(__name__)
