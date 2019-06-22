@@ -1,16 +1,13 @@
 from peewee import *
-from flask_peewee.db import Database
-from flask_security import UserMixin
-import datetime, json
+import datetime
 
-
-database = SqliteDatabase("data.sqlite3")
+db = SqliteDatabase("data.sqlite3")
 
 class BaseModel(Model):
     class Meta:
-        database = database
+        database = db
 
-class User(BaseModel, UserMixin):
+class User(BaseModel):
     username = CharField(unique=True)
     first_name = CharField()
     last_name = CharField()
@@ -25,9 +22,9 @@ class Publication(BaseModel):
     author = ForeignKeyField(User, backref="publications")
 
 def create_tables():
-    with database:
-        database.create_tables([User, Publication, ])
+    with db:
+        db.create_tables([User, Publication, ])
 
 def drop_tables():
-    with database:
-        database.drop_tables([User, Publication, ])
+    with db:
+        db.drop_tables([User, Publication, ])

@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+        <title>{% block title %}Microlly{% endblock %}</title>
+        <meta charset="utf8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+        <link href="https://fonts.googleapis.com/css?family=Lobster&display=swap" rel="stylesheet">
+	</head>
+    <body class="is-preload">
+        <!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="{{ url_for('show_entries') }}">Microlly</a></h1>
+                        <nav class="main">
+                            <ul>
+                                <!-- Login -->
+                                    {% if not session.logged_in %}
+                                        <a href="{{ url_for('login') }}" class="button large fit">Log In</a>
+                                    {% else %}
+                                        <a href="{{ url_for('logout') }}" class="button large fit">Log Out</a>
+                                    {% endif %}
+                                <!-- Register -->
+                                    <a href="#" class="button large fit">Register</a>
+                            </ul>
+                        </nav>
+                    </header>
+            </div>
+    </body>
+</html>

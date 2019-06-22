@@ -13,6 +13,8 @@ flask-wtf = "*"
 flask-restful = "*"
 requests = "*"
 jinja2 = "*"
+flask-security = "*"
+pypi = "*"
 
 [requires]
 python_version = "3.7"
