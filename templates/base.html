@@ -16,12 +16,12 @@
                         <nav class="main">
                             <ul>
                                 <!-- Register -->
-                                    <a href="{{ url_for('signUp') }}" class="button large fit">Sign Up</a>
+                                    <a href="{{ url_for('signUp') }}" class="button col-1-medium fit">Sign Up</a>
                                 <!-- Login -->
                                     {% if not session.logged_in %}
-                                        <a href="{{ url_for('login') }}" class="button large fit">Sign In</a>
+                                        <a href="{{ url_for('login') }}" class="button col-1-medium fit">Sign In</a>
                                     {% else %}
-                                        <a href="{{ url_for('logout') }}" class="button large fit">Log Out</a>
+                                        <a href="{{ url_for('logout') }}" class="button col-1-medium fit">Log Out</a>
                                     {% endif %}
                             </ul>
                         </nav>

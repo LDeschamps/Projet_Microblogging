@@ -2,6 +2,8 @@
 import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, \
     abort, render_template, flash
+from models import *
+
 
 # configuration
 DATABASE = './data.sqlite3'
@@ -51,20 +53,21 @@ def add_entry():
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
+        query = User.select().where(User.username == request.form['username'])
+        if query.exists():
             error = 'Invalid username'
-        elif request.form['password'] != app.Config['PASSWORD']:
+        elif query.first().password == request.form['password']:
             error = 'Invalid password'
         else:
             session['logged_in'] = True
-            flash('Welcome ! You are now logged')
+            flash('Welcome ! You are now logged in')
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
 
 
 @app.route('/signUp')
 def signUp():
-   return render_template('signup.html')
+    return render_template('signup.html')
 
 
 @app.route('/logout')
