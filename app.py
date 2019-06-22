@@ -34,18 +34,18 @@ def teardown_request(exception):
 @app.route('/')
 def show_entries():
     cur = g.db.execute('select title, body from publication order by creation_date desc')
-    entries = [dict(title=row[0], body=row[1]) for row in cur.fetchall()]
-    return render_template('show_entries.html', entries=entries)
+    publication = [dict(title=row[0], body=row[1]) for row in cur.fetchall()]
+    return render_template('show_entries.html', publication=publication)
 
 
 @app.route('/add', methods=['POST'])
 def add_entry():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('insert into entries (title , body) values ​​(?, ?)',
+    g.db.execute('insert into publication (title , body, creation_date) values ​​(?, ?, sysdate)',
                  [request.form['title'], request.form['body']])
     g.db.commit()
-    flash('New entry was successfully posted')
+    flash('New publication was successfully posted')
     return redirect(url_for('show_entries'))
 
 
